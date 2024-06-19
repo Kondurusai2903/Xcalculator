@@ -2,85 +2,96 @@ import React, { useState } from "react";
 import "./xcalculator.css";
 const Xcalculator = () => {
   const [expression, setExpression] = useState("");
-  const [operator, setOperator] = useState("");
-  const [firstnum, setFirstnum] = useState("");
-  const [secondnum, setSecondnum] = useState("");
-  const [final, setFinal] = useState();
-  function handleoperator(op) {
-    if (firstnum === "") {
-      alert("please enter the first name");
-      return;
-    }
-    setOperator(op);
-    console.log("operator is set");
-  }
-  function appendNum(num) {
-    if (operator) {
-      if (secondnum === "") {
-        setSecondnum(num);
-      } else {
-        setSecondnum(secondnum * 10 + num);
-      }
-    } else {
-      if (firstnum === "") {
-        setFirstnum(num);
-      } else {
-        setFirstnum(firstnum * 10 + num);
-      }
-    }
-    let val = firstnum + operator + secondnum;
-    setExpression(val);
-  }
-  const calculate = () => {
-    if (secondnum === "" || operator === "" || firstnum === "") {
-      setFirstnum("");
-      setSecondnum("");
-      setOperator("");
-      setExpression("");
-      console.log("reseted");
-      return;
-    }
-    switch (operator) {
-      case "+":
-        let res = firstnum + secondnum;
-        setFinal(res);
-        setFirstnum(res);
-        setSecondnum("");
-        setOperator("");
-        break;
-      case "-":
-        let res2 = firstnum - secondnum;
-        setFinal(res2);
-        setFirstnum(res);
-        setSecondnum("");
-        setOperator("");
-        break;
-      case "*":
-        let res3 = firstnum * secondnum;
-        setFinal(res3);
-        setFirstnum(res);
-        setSecondnum("");
-        setOperator("");
-        break;
-      case "/":
-        let res4 = firstnum / secondnum;
-        setFinal(res4);
-        setFirstnum(res);
-        setSecondnum("");
-        setOperator("");
-        break;
-      default:
-        console.log("defalult is executed!");
-    }
-    setExpression("");
+  const [final, setFinal] = useState("");
+  const appendNum = (num) => {
+    setExpression(expression + num);
   };
-  function handlereset() {
-    setFirstnum("");
-    setSecondnum("");
-    setOperator("");
+  const handleoperator = (op) => {
+    setExpression(expression + op);
+  };
+  const handlereset = () => {
     setExpression("");
-    console.log("reset done");
-  }
+    setFinal("");
+  };
+  const calculate = () => {
+    function evaluate(expression) {
+      let tokens = expression.split("");
+
+      // Stack for numbers: 'values'
+      let values = [];
+
+      // Stack for Operators: 'ops'
+      let ops = [];
+
+      for (let i = 0; i < tokens.length; i++) {
+        // Current token is a whitespace, skip it
+        if (tokens[i] === " ") {
+          continue;
+        }
+        if (tokens[i] >= "0" && tokens[i] <= "9") {
+          let sbuf = "";
+          while (i < tokens.length && tokens[i] >= "0" && tokens[i] <= "9") {
+            sbuf = sbuf + tokens[i++];
+          }
+          values.push(parseInt(sbuf, 10));
+          i--;
+        } else if (tokens[i] === "(") {
+          ops.push(tokens[i]);
+        } else if (tokens[i] === ")") {
+          while (ops[ops.length - 1] !== "(") {
+            values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+          }
+          ops.pop();
+        } else if (
+          tokens[i] === "+" ||
+          tokens[i] == "-" ||
+          tokens[i] == "*" ||
+          tokens[i] == "/"
+        ) {
+          while (
+            ops.length > 0 &&
+            hasPrecedence(tokens[i], ops[ops.length - 1])
+          ) {
+            values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+          }
+          ops.push(tokens[i]);
+        }
+      }
+      while (ops.length > 0) {
+        values.push(applyOp(ops.pop(), values.pop(), values.pop()));
+      }
+      return values.pop();
+    }
+    function hasPrecedence(op1, op2) {
+      if (op2 === "(" || op2 === ")") {
+        return false;
+      }
+      if ((op1 === "*" || op1 === "/") && (op2 === "+" || op2 === "-")) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    function applyOp(op, b, a) {
+      // eslint-disable-next-line default-case
+      switch (op) {
+        case "+":
+          return a + b;
+        case "-":
+          return a - b;
+        case "*":
+          return a * b;
+        case "/":
+          if (b === 0) {
+            document.write("Cannot divide by zero");
+          }
+          return parseInt(a / b, 10);
+      }
+      return 0;
+    }
+    setFinal(evaluate(expression));
+    console.log(final);
+  };
   return (
     <div>
       <h1>React Calculator</h1>
