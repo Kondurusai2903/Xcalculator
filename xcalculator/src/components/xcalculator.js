@@ -15,6 +15,9 @@ const Xcalculator = () => {
   };
   const calculate = () => {
     function evaluate(expression) {
+      if (expression === "") {
+        return "Error";
+      }
       let tokens = expression.split("");
 
       // Stack for numbers: 'values'
