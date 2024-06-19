@@ -82,10 +82,7 @@ const Xcalculator = () => {
         case "*":
           return a * b;
         case "/":
-          if (b === 0) {
-            document.write("Cannot divide by zero");
-          }
-          return parseInt(a / b, 10);
+          return a / b;
       }
       return 0;
     }
