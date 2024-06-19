@@ -33,7 +33,11 @@ const Xcalculator = () => {
   }
   const calculate = () => {
     if (secondnum === "" || operator === "" || firstnum === "") {
-      setFinal("Error");
+      setFirstnum("");
+      setSecondnum("");
+      setOperator("");
+      setExpression("");
+      console.log("reseted");
       return;
     }
     switch (operator) {
