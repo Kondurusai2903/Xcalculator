@@ -3,7 +3,8 @@
   padding: 0;
   box-sizing: border-box;
 }
-.btn {
+
+button {
   padding: 1rem;
   font-size: large;
   gap: 1;
