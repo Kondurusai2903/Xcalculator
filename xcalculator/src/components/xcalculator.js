@@ -18,45 +18,52 @@ const Xcalculator = () => {
     if (operator) {
       if (secondnum === "") {
         setSecondnum(num);
-        console.log("secondnum is started");
-        console.log(secondnum);
       } else {
         setSecondnum(secondnum * 10 + num);
-        console.log(secondnum, "the value of secondnum");
       }
     } else {
       if (firstnum === "") {
         setFirstnum(num);
-        console.log("firstnum is started");
-        console.log(firstnum, "the value of firstnum");
       } else {
         setFirstnum(firstnum * 10 + num);
-        console.log(firstnum, "the value of firstnum");
       }
     }
     let val = firstnum + operator + secondnum;
     setExpression(val);
   }
   const calculate = () => {
-    if (secondnum === "" || operator === "") {
+    if (secondnum === "" || operator === "" || firstnum === "") {
+      setFinal("Error");
       return;
     }
     switch (operator) {
       case "+":
         let res = firstnum + secondnum;
         setFinal(res);
+        setFirstnum(res);
+        setSecondnum("");
+        setOperator("");
         break;
       case "-":
         let res2 = firstnum - secondnum;
         setFinal(res2);
+        setFirstnum(res);
+        setSecondnum("");
+        setOperator("");
         break;
       case "*":
         let res3 = firstnum * secondnum;
         setFinal(res3);
+        setFirstnum(res);
+        setSecondnum("");
+        setOperator("");
         break;
       case "/":
         let res4 = firstnum / secondnum;
         setFinal(res4);
+        setFirstnum(res);
+        setSecondnum("");
+        setOperator("");
         break;
       default:
         console.log("defalult is executed!");
@@ -67,6 +74,8 @@ const Xcalculator = () => {
     setFirstnum("");
     setSecondnum("");
     setOperator("");
+    setExpression("");
+    console.log("reset done");
   }
   return (
     <div>
